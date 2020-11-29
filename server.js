@@ -5,7 +5,7 @@ const nodemailer = require('nodemailer');
 
 const app = express();
 const path = require('path');
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8080;
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 
@@ -18,35 +18,30 @@ const TRANSPORTER = nodemailer.createTransport({
 });
 
 
-
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  console.log(process.env.EMAIL_FROM)
-  //__dirname : It will resolve to your project folder.
-});
-
-app.post('/email', urlencodedParser, (req, res) => {
-  //Send an email here but currently dummy email
-  console.log('Data:', req.body);
-  res.json({ message: 'Message received!' })
+express()
+  .use(express.static(path.join(__dirname, 'public')))
+  .set('view engine', 'html')
+  .get('/', (req, res) => res.render('index'))
+  .post('/email', urlencodedParser, (req, res) => {
+    //Send an email here but currently dummy email
+    console.log('Data:', req.body);
+    res.json({ message: 'Message received!' })
 
 
-  const email = {
-    from: process.env.EMAIL_FROM,
-    to: process.env.EMAIL_TO,
-    subject: `From: ${req.body.email}`,
-    text: req.body.text
-  };
+    const email = {
+      from: process.env.EMAIL_FROM,
+      to: process.env.EMAIL_TO,
+      subject: `From: ${req.body.email}`,
+      text: req.body.text
+    };
 
-  TRANSPORTER.sendMail(email, (error, info) => {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-    }
-  });
+    TRANSPORTER.sendMail(email, (error, info) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
 
-});
-
-
-app.listen(PORT, () => console.log('Server is starting on PORT,', 8080));
+  })
+  .listen(PORT, () => console.log(`Listening on ${PORT}`))

@@ -6,6 +6,9 @@ const nodemailer = require('nodemailer');
 const app = express();
 const path = require('path');
 const PORT = 8080;
+
+const urlencodedParser = bodyParser.urlencoded({ extended: false })
+
 const TRANSPORTER = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -14,8 +17,7 @@ const TRANSPORTER = nodemailer.createTransport({
   }
 });
 
-const jsonParser = bodyParser.json()
-const urlencodedParser = bodyParser.urlencoded({ extended: false })
+
 
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));

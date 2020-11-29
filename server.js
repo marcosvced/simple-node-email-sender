@@ -5,7 +5,7 @@ const nodemailer = require('nodemailer');
 
 const app = express();
 const path = require('path');
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 
